@@ -1,0 +1,59 @@
+{
+  "name": "@favasconcelos/standards-cli",
+  "version": "0.1.0",
+  "description": "Installs shared coding standards on a machine and wires them into every installed AI harness",
+  "keywords": [
+    "cli",
+    "standards",
+    "agents-md",
+    "opencode",
+    "codex",
+    "claude-code"
+  ],
+  "license": "MIT",
+  "author": "Felipe Vasconcelos",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/favasconcelos/standards-cli.git"
+  },
+  "homepage": "https://github.com/favasconcelos/standards-cli#readme",
+  "bugs": {
+    "url": "https://github.com/favasconcelos/standards-cli/issues"
+  },
+  "type": "module",
+  "bin": {
+    "standards": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "templates"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check .",
+    "format": "biome check --write .",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@clack/prompts": "1.8.1",
+    "commander": "15.0.0",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.15",
+    "@favasconcelos/biome-config": "1.0.0",
+    "@types/node": "26.6.5",
+    "tsup": "8.5.1",
+    "typescript": "7.0.2",
+    "vitest": "5.0.4"
+  },
+  "packageManager": "npm@11.19.0"
+}
