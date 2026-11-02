@@ -1,6 +1,6 @@
-import { styleText } from 'node:util'
+import { styleText } from 'node:util';
 
-export const DAY_MS = 24 * 60 * 60 * 1000
+export const DAY_MS = 24 * 60 * 60 * 1000;
 
 export const c = {
   bold: (s: string) => styleText('bold', s),
@@ -9,4 +9,4 @@ export const c = {
   green: (s: string) => styleText('green', s),
   yellow: (s: string) => styleText('yellow', s),
   cyan: (s: string) => styleText('cyan', s),
-}
+};

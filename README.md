@@ -27,13 +27,13 @@ To run from source instead: `npm install && npm run build && npm link`.
 2. **Pointers, not config edits** – for each harness the CLI creates the file that harness
    already reads, as a symlink to the canonical copy. Updates therefore propagate atomically.
 
-| Harness | Pointer file | How the harness picks it up |
-|---|---|---|
-| opencode | `~/.config/opencode/CODE_STANDARDS.md` | already listed in `opencode.json` `instructions` |
-| pi | `~/.pi/agent/AGENTS.md` | concatenated with repo `AGENTS.md` files at startup |
-| Codex | `~/.codex/AGENTS.md` | global scope (32 KiB combined cap) |
-| Claude Code | `~/.claude/CLAUDE.md` | user-level memory |
-| Copilot | — (repo scope only) | repo `AGENTS.md` covers the coding agent; nothing global to install |
+| Harness     | Pointer file                           | How the harness picks it up                                         |
+| ----------- | -------------------------------------- | ------------------------------------------------------------------- |
+| opencode    | `~/.config/opencode/CODE_STANDARDS.md` | already listed in `opencode.json` `instructions`                    |
+| pi          | `~/.pi/agent/AGENTS.md`                | concatenated with repo `AGENTS.md` files at startup                 |
+| Codex       | `~/.codex/AGENTS.md`                   | global scope (32 KiB combined cap)                                  |
+| Claude Code | `~/.claude/CLAUDE.md`                  | user-level memory                                                   |
+| Copilot     | — (repo scope only)                    | repo `AGENTS.md` covers the coding agent; nothing global to install |
 
 ## Commands
 
@@ -58,11 +58,11 @@ new standards text.
 `~/.config/standards-cli/config.json` (state in `~/.local/state/standards-cli/`). Override
 locations with `STANDARDS_CLI_CONFIG_DIR` / `STANDARDS_CLI_STATE_DIR`.
 
-| Key | Default | |
-|---|---|---|
-| `harnesses` | `[]` | harness ids wired by `init` |
-| `autoCheckUpdates` | `true` | registry check in `status`/`sync`/`upgrade` |
-| `lastUpdateCheck` | `0` | epoch ms of the last check (managed) |
+| Key                | Default |                                             |
+| ------------------ | ------- | ------------------------------------------- |
+| `harnesses`        | `[]`    | harness ids wired by `init`                 |
+| `autoCheckUpdates` | `true`  | registry check in `status`/`sync`/`upgrade` |
+| `lastUpdateCheck`  | `0`     | epoch ms of the last check (managed)        |
 
 ## Extending
 

@@ -21,12 +21,12 @@ npm run dev         # tsup --watch
 
 ## Commands
 
-| Command           | Purpose                                  |
-| ----------------- | ---------------------------------------- |
-| `npm run build`   | Bundle `src/cli.ts` → `dist/cli.js`      |
-| `npm run typecheck` | `tsc --noEmit`                         |
-| `npm run lint`    | `biome check .`                          |
-| `npm test`        | `vitest run` (`test/` mirrors `src/`)    |
+| Command             | Purpose                               |
+| ------------------- | ------------------------------------- |
+| `npm run build`     | Bundle `src/cli.ts` → `dist/cli.js`   |
+| `npm run typecheck` | `tsc --noEmit`                        |
+| `npm run lint`      | `biome check .`                       |
+| `npm test`          | `vitest run` (`test/` mirrors `src/`) |
 
 Run `npm run lint` before finishing a task. Fix all reported issues.
 

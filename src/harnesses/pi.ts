@@ -1,6 +1,6 @@
-import { join } from 'node:path'
-import { onPath } from '@/harnesses/detect'
-import type { Harness } from '@/harnesses/types'
+import { join } from 'node:path';
+import { onPath } from '@/harnesses/detect';
+import type { Harness } from '@/harnesses/types';
 
 export const piHarness: Harness = {
   id: 'pi',
@@ -9,4 +9,4 @@ export const piHarness: Harness = {
   pointerPath: (home) => join(home, '.pi/agent/AGENTS.md'),
   detect: () => onPath('pi'),
   note: 'Concatenated with repo AGENTS.md files at startup.',
-}
+};

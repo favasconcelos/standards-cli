@@ -1,6 +1,6 @@
-import { join } from 'node:path'
-import { onPath } from '@/harnesses/detect'
-import type { Harness } from '@/harnesses/types'
+import { join } from 'node:path';
+import { onPath } from '@/harnesses/detect';
+import type { Harness } from '@/harnesses/types';
 
 export const opencodeHarness: Harness = {
   id: 'opencode',
@@ -9,4 +9,4 @@ export const opencodeHarness: Harness = {
   pointerPath: (home) => join(home, '.config/opencode/CODE_STANDARDS.md'),
   detect: () => onPath('opencode'),
   note: 'Already listed in opencode.json instructions; the CLI only ensures the file exists.',
-}
+};

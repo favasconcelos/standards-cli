@@ -1,3 +1,3 @@
-import { buildProgram } from '@/program'
+import { buildProgram } from '@/program';
 
-await buildProgram().parseAsync()
+await buildProgram().parseAsync();

@@ -55,5 +55,5 @@
     "typescript": "7.0.2",
     "vitest": "5.0.5"
   },
-  "packageManager": "npm@12.2.1"
+  "packageManager": "npm@11.19.1"
 }
