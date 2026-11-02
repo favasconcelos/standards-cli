@@ -7,6 +7,9 @@ Installs shared coding standards (`CODE_STANDARDS.md`) on a machine and wires th
 every installed AI harness — opencode, pi, Codex, Claude Code, Copilot — so you stop
 repeating yourself in every session.
 
+> These are my personal coding standards, distilled from my own projects. They reflect
+> how I like code to be written — fork this repo and make them yours.
+
 ## Install
 
 ```sh

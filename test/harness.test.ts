@@ -1,7 +1,9 @@
+import { chmod } from 'node:fs/promises'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
+import { onPath } from '@/harnesses/detect'
 import { globalHarnesses, HARNESSES, harnessById } from '@/harnesses/index'
-import { tempDir } from './helpers'
+import { tempDir, writeFile } from './helpers'
 
 describe('harness registry', () => {
   it('has unique ids and at least one global harness', () => {
@@ -28,6 +30,32 @@ describe('harness registry', () => {
     const home = await tempDir()
     for (const harness of HARNESSES) {
       expect(() => harness.detect(home)).not.toThrow()
+    }
+  })
+
+  it('onPath requires a runnable file', async () => {
+    const dir = await tempDir()
+    const previousPath = process.env.PATH
+    process.env.PATH = dir
+    try {
+      const name = `standards-cli-probe-${process.pid}`
+      await writeFile(join(dir, name), '#!/bin/sh\necho hi\n')
+      expect(onPath(name)).toBe(false)
+      await chmod(join(dir, name), 0o755)
+      expect(onPath(name)).toBe(true)
+    } finally {
+      process.env.PATH = previousPath
+    }
+  })
+
+  it('copilot is not detected when no runnable copilot binary is on PATH', async () => {
+    const home = await tempDir()
+    const previousPath = process.env.PATH
+    process.env.PATH = home
+    try {
+      expect(harnessById('copilot')?.detect(home)).toBe(false)
+    } finally {
+      process.env.PATH = previousPath
     }
   })
 })
