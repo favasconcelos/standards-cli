@@ -1,6 +1,7 @@
 import { execFile } from 'node:child_process';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { shellOnWindows } from '@/harnesses/detect';
 import { DAY_MS } from '@/util/format';
 
 export const UPDATE_CHECK_TTL_MS = DAY_MS;
@@ -19,7 +20,7 @@ export function compareVersions(a: string, b: string): number {
 
 function latestFromNpm(packageName: string, timeoutMs = 10_000): Promise<string | null> {
   return new Promise((resolve) => {
-    execFile('npm', ['view', packageName, 'version'], { timeout: timeoutMs }, (error, stdout) => {
+    execFile('npm', ['view', packageName, 'version'], { timeout: timeoutMs, shell: shellOnWindows() }, (error, stdout) => {
       if (error) {
         return resolve(null);
       }

@@ -33,7 +33,9 @@ export function templatePath(): string {
   return join(packageRoot(), 'templates/CODE_STANDARDS.md');
 }
 
-/** Machine-wide canonical copy every harness pointer resolves to. */
+/** Machine-wide canonical copy every harness pointer resolves to.
+ * Intentionally XDG-style (`~/.local/...`) on all platforms — including Windows and macOS —
+ * so harness pointers and docs stay identical everywhere. */
 export function defaultCanonicalPath(home: string = homedir()): string {
   return join(home, '.local/share/standards-cli/CODE_STANDARDS.md');
 }

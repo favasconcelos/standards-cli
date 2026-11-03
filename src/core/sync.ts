@@ -1,5 +1,7 @@
 import { copyFile, lstat, mkdir, readFile, readlink, rename, symlink } from 'node:fs/promises';
 import { dirname } from 'node:path';
+import { StandardsError } from '@/util/errors';
+import { samePath } from '@/util/path';
 
 export function backupName(path: string): string {
   return `${path}.bak-${new Date().toISOString().replace(/[:.]/g, '-')}`;
@@ -47,12 +49,14 @@ export type LinkAction = 'already' | 'linked' | 'relinked';
 /**
  * Creates `pointer` as a symlink to `canonical`.
  * Real files or stale symlinks found at the pointer path are backed up first, never deleted.
+ * On Windows symlinks need the `file` type and either Developer Mode or elevated
+ * privileges; permission failures surface as a StandardsError with guidance.
  */
 export async function ensureLink(pointer: string, canonical: string): Promise<{ action: LinkAction; backup?: string }> {
   let missing = false;
   try {
     const st = await lstat(pointer);
-    if (st.isSymbolicLink() && (await readlink(pointer)) === canonical) {
+    if (st.isSymbolicLink() && samePath(await readlink(pointer), canonical)) {
       return { action: 'already' };
     }
   } catch (error) {
@@ -63,12 +67,12 @@ export async function ensureLink(pointer: string, canonical: string): Promise<{ 
   }
   if (missing) {
     await mkdir(dirname(pointer), { recursive: true });
-    await symlink(canonical, pointer);
+    await symlinkFile(canonical, pointer);
     return { action: 'linked' };
   }
   const backup = backupName(pointer);
   await rename(pointer, backup);
-  await symlink(canonical, pointer);
+  await symlinkFile(canonical, pointer);
   return { action: 'relinked', backup };
 }
 
@@ -81,5 +85,24 @@ export async function linkTarget(pointer: string): Promise<string | null> {
     return await readlink(pointer);
   } catch {
     return null;
+  }
+}
+
+/** Creates a file symlink, translating Windows permission failures into actionable guidance. */
+async function symlinkFile(target: string, path: string): Promise<void> {
+  try {
+    if (process.platform === 'win32') {
+      await symlink(target, path, 'file');
+    } else {
+      await symlink(target, path);
+    }
+  } catch (error) {
+    const code = (error as NodeJS.ErrnoException).code;
+    if (process.platform === 'win32' && (code === 'EPERM' || code === 'EACCES')) {
+      throw new StandardsError(
+        `Could not create a symlink at ${path} (Windows needs Developer Mode or an elevated prompt for symlinks). Enable Developer Mode (Settings → Privacy & security → For developers) and run \`standards sync\` again.`,
+      );
+    }
+    throw error;
   }
 }

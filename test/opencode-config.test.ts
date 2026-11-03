@@ -56,7 +56,7 @@ describe('ensureInstructionsEntry', () => {
   it('is idempotent and recognises ~/ and absolute spellings of the same file', async () => {
     for (const spelling of [ENTRY, null]) {
       const { home, pointer } = await setup();
-      await writeFile(join(home, '.config/opencode/opencode.jsonc'), `{ "instructions": ["${spelling ?? pointer}"] }\n`);
+      await writeFile(join(home, '.config/opencode/opencode.jsonc'), `{ "instructions": [${JSON.stringify(spelling ?? pointer)}] }\n`);
       expect(await hasInstructionsEntry(home, pointer)).toBe(true);
       expect((await ensureInstructionsEntry(home, pointer)).action).toBe('already');
     }
@@ -66,6 +66,14 @@ describe('ensureInstructionsEntry', () => {
     const { home, pointer } = await setup({ 'opencode.jsonc': '{ "instructions": ["CODE_STANDARDS.md"] }\n' });
     expect(await hasInstructionsEntry(home, pointer)).toBe(false);
     expect((await ensureInstructionsEntry(home, pointer)).action).toBe('added');
+  });
+
+  it('recognises a backslash ~/ spelling of the same file', async () => {
+    const { home, pointer } = await setup({
+      'opencode.jsonc': '{ "instructions": ["~\\\\.config/opencode/CODE_STANDARDS.md"] }\n',
+    });
+    expect(await hasInstructionsEntry(home, pointer)).toBe(true);
+    expect((await ensureInstructionsEntry(home, pointer)).action).toBe('already');
   });
 
   it('reports absence when there is no config', async () => {

@@ -1,6 +1,6 @@
 import { spawnSync } from 'node:child_process';
 import { join } from 'node:path';
-import { onPath } from '@/harnesses/detect';
+import { onPath, shellOnWindows } from '@/harnesses/detect';
 import type { Harness } from '@/harnesses/types';
 
 /**
@@ -13,7 +13,7 @@ function copilotCliPresent(): boolean {
     return false;
   }
   try {
-    const run = spawnSync('copilot', ['--version'], { timeout: 8000, encoding: 'utf8' });
+    const run = spawnSync('copilot', ['--version'], { timeout: 8000, encoding: 'utf8', shell: shellOnWindows() });
     if (run.error || run.status !== 0) {
       return false;
     }

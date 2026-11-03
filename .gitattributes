@@ -1,0 +1,3 @@
+# Force LF everywhere (notably on Windows checkouts) so biome's
+# formatter and content hashes stay identical across platforms.
+* text=auto eol=lf
