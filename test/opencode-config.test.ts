@@ -68,6 +68,14 @@ describe('ensureInstructionsEntry', () => {
     expect((await ensureInstructionsEntry(home, pointer)).action).toBe('added');
   });
 
+  it('recognises a backslash ~/ spelling of the same file', async () => {
+    const { home, pointer } = await setup({
+      'opencode.jsonc': '{ "instructions": ["~\\\\.config/opencode/CODE_STANDARDS.md"] }\n',
+    });
+    expect(await hasInstructionsEntry(home, pointer)).toBe(true);
+    expect((await ensureInstructionsEntry(home, pointer)).action).toBe('already');
+  });
+
   it('reports absence when there is no config', async () => {
     const { home, pointer } = await setup();
     expect(await hasInstructionsEntry(home, pointer)).toBe(false);

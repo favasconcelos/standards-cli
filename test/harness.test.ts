@@ -33,7 +33,7 @@ describe('harness registry', () => {
     }
   });
 
-  it('onPath requires a runnable file', async () => {
+  it.runIf(process.platform !== 'win32')('onPath requires a runnable file', async () => {
     const dir = await tempDir();
     const previousPath = process.env.PATH;
     process.env.PATH = dir;

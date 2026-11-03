@@ -46,7 +46,7 @@ describe('ensureLink', () => {
     const other = join(dir, 'other.md');
     await writeFile(other, 'y\n');
     await unlink(pointer);
-    await symlink(other, pointer);
+    await symlink(other, pointer, 'file');
     const repaired = await ensureLink(pointer, canonical);
     expect(repaired.action).toBe('relinked');
     expect(repaired.backup).toBeDefined();

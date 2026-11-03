@@ -1,8 +1,9 @@
 import { copyFile, lstat, mkdir, readFile, writeFile } from 'node:fs/promises';
-import { dirname, isAbsolute, join, sep } from 'node:path';
+import { dirname, join } from 'node:path';
 import { applyEdits, modify, type ParseError, parse } from 'jsonc-parser';
 import { backupName } from '@/core/sync';
 import { StandardsError } from '@/util/errors';
+import { isAbsoluteCrossPlatform, normalizeForCompare, samePath } from '@/util/path';
 
 export type InstructionsAction = 'already' | 'added' | 'created';
 
@@ -23,9 +24,19 @@ async function globalConfigPath(home: string): Promise<{ path: string; exists: b
   return { path: join(dir, 'opencode.jsonc'), exists: false };
 }
 
-/** The form written to config: `~/…` under home, absolute otherwise. */
+/** The form written to config: `~/…` with forward slashes under home, absolute otherwise. */
 function configEntry(home: string, file: string): string {
-  return file.startsWith(home + sep) ? `~/${file.slice(home.length + 1)}` : file;
+  if (samePath(file, home)) {
+    return '~';
+  }
+  if (normalizeForCompare(file).startsWith(`${normalizeForCompare(home)}/`)) {
+    const rel = file
+      .slice(home.length)
+      .replace(/^[\\/]+/, '')
+      .replace(/\\/g, '/');
+    return `~/${rel}`;
+  }
+  return file;
 }
 
 /** True when an `instructions` entry resolves to `file`. Relative entries are workspace-scoped, so never match. */
@@ -33,8 +44,15 @@ function entryPointsTo(entry: unknown, home: string, file: string): boolean {
   if (typeof entry !== 'string') {
     return false;
   }
-  const resolved = entry.startsWith('~/') ? join(home, entry.slice(2)) : entry;
-  return isAbsolute(resolved) && resolved === file;
+  let resolved: string;
+  if (entry === '~') {
+    resolved = home;
+  } else if (entry.startsWith('~/') || entry.startsWith('~\\')) {
+    resolved = join(home, entry.slice(2));
+  } else {
+    resolved = entry;
+  }
+  return isAbsoluteCrossPlatform(resolved) && samePath(resolved, file);
 }
 
 function parseConfig(path: string, text: string): Record<string, unknown> {

@@ -12,6 +12,11 @@ function isRunnable(path: string): boolean {
 
 /** True when a runnable file with this name is visible on PATH (no subprocess spawned). */
 export function onPath(cmd: string): boolean {
+  return resolveOnPath(cmd) !== null;
+}
+
+/** Full path of `cmd` on PATH, or null. Handles Windows executable extensions and `;` delimiters. */
+export function resolveOnPath(cmd: string): string | null {
   const pathEnv = process.env.PATH ?? '';
   const delimiter = process.platform === 'win32' ? ';' : ':';
   const names = process.platform === 'win32' ? [`${cmd}.exe`, `${cmd}.cmd`, `${cmd}.bat`, cmd] : [cmd];
@@ -20,10 +25,16 @@ export function onPath(cmd: string): boolean {
       continue;
     }
     for (const name of names) {
-      if (isRunnable(join(dir, name))) {
-        return true;
+      const candidate = join(dir, name);
+      if (isRunnable(candidate)) {
+        return candidate;
       }
     }
   }
-  return false;
+  return null;
+}
+
+/** Pass to spawn options: `.cmd`/`.bat` shims (npm, copilot) only resolve under a shell on Windows. */
+export function shellOnWindows(): boolean | undefined {
+  return process.platform === 'win32' ? true : undefined;
 }

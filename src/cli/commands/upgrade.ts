@@ -2,13 +2,14 @@ import { execFile } from 'node:child_process';
 import * as p from '@clack/prompts';
 import type { Context } from '@/cli/context';
 import { checkForUpdates } from '@/core/update-check';
+import { shellOnWindows } from '@/harnesses/detect';
 import { StandardsError } from '@/util/errors';
 import { c } from '@/util/format';
 import pkg from '../../../package.json' with { type: 'json' };
 
 function runNpmInstall(spec: string): Promise<void> {
   return new Promise((resolve, reject) => {
-    const child = execFile('npm', ['install', '-g', spec], (error) => {
+    const child = execFile('npm', ['install', '-g', spec], { shell: shellOnWindows() }, (error) => {
       if (error) {
         reject(new StandardsError(`npm install failed: ${error.message}`));
       } else {
@@ -37,6 +38,9 @@ export async function upgradeCommand(ctx: Context, yes: boolean): Promise<void> 
   }
 
   console.log(`Update available: ${c.dim(update.current)} → ${c.bold(update.latest)}`);
+  if (!/^\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?(\+[0-9A-Za-z.-]+)?$/.test(update.latest.replace(/^v/, ''))) {
+    throw new StandardsError(`Refusing to install unexpected version string "${update.latest}".`);
+  }
   if (!yes) {
     const confirm = await p.confirm({ message: `Install ${pkg.name}@${update.latest} now?` });
     if (p.isCancel(confirm) || !confirm) {

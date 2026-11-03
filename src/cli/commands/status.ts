@@ -4,7 +4,7 @@ import { filesEqual, linkTarget } from '@/core/sync';
 import { checkForUpdates } from '@/core/update-check';
 import { HARNESSES } from '@/harnesses/index';
 import { c } from '@/util/format';
-import { tildify } from '@/util/path';
+import { samePath, tildify } from '@/util/path';
 import pkg from '../../../package.json' with { type: 'json' };
 
 export async function statusCommand(ctx: Context): Promise<void> {
@@ -28,7 +28,7 @@ export async function statusCommand(ctx: Context): Promise<void> {
     if (harness.pointerPath) {
       const path = harness.pointerPath(ctx.home);
       const target = await linkTarget(path);
-      pointer = target === ctx.canonical ? c.green(`linked → ${tildify(ctx.canonical)}`) : target ? c.yellow(`points elsewhere → ${tildify(target)}`) : c.red('missing pointer');
+      pointer = target === null ? c.red('missing pointer') : samePath(target, ctx.canonical) ? c.green(`linked → ${tildify(ctx.canonical)}`) : c.yellow(`points elsewhere → ${tildify(target)}`);
       if (harness.configWiring) {
         const label = harness.configWiring.label;
         try {

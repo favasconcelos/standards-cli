@@ -39,6 +39,11 @@ To run from source instead: `npm install && npm run build && npm link`.
 | Claude Code | `~/.claude/CLAUDE.md`                  | user-level memory                                                  |
 | Copilot     | `~/.copilot/copilot-instructions.md`   | Copilot CLI user-level instructions, applied across repositories   |
 
+Paths are the same on Linux, macOS, and Windows (`~` is the home directory on each).
+On Windows, creating symlinks needs Developer Mode (Settings → Privacy & security →
+For developers → Developer Mode) or an elevated prompt; otherwise `sync` fails with
+guidance instead of leaving a half-written pointer.
+
 ## Commands
 
 ```
