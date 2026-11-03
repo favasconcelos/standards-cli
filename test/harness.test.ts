@@ -14,6 +14,8 @@ describe('harness registry', () => {
     expect(harnessById('nope')).toBeUndefined();
     expect(harnessById('copilot')?.scope).toBe('repo');
     expect(harnessById('copilot')?.pointerPath).toBeUndefined();
+    expect(harnessById('opencode')?.configWiring).toBeDefined();
+    expect(harnessById('pi')?.configWiring).toBeUndefined();
   });
 
   it('resolves pointer paths under the given home', async () => {

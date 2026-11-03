@@ -24,12 +24,21 @@ export async function statusCommand(ctx: Context): Promise<void> {
     const detected = harness.detect(ctx.home) ? c.green('detected') : c.dim('not detected');
     const configured = ctx.config.harnesses.includes(harness.id) ? c.green('wired') : c.dim('not wired');
     let pointer = c.dim('—');
+    let wiring = '';
     if (harness.pointerPath) {
       const path = harness.pointerPath(ctx.home);
       const target = await linkTarget(path);
       pointer = target === ctx.canonical ? c.green(`linked → ${tildify(ctx.canonical)}`) : target ? c.yellow(`points elsewhere → ${tildify(target)}`) : c.red('missing pointer');
+      if (harness.configWiring) {
+        const label = harness.configWiring.label;
+        try {
+          wiring = `, ${(await harness.configWiring.check(ctx.home, path)) ? c.green(`${label} set`) : c.red(`${label} missing (run standards sync)`)}`;
+        } catch (error) {
+          wiring = `, ${c.red((error as Error).message)}`;
+        }
+      }
     }
-    console.log(`${c.bold(harness.label)} ${c.dim(`[${harness.id}]`)}: ${detected}, ${configured}, ${pointer}`);
+    console.log(`${c.bold(harness.label)} ${c.dim(`[${harness.id}]`)}: ${detected}, ${configured}, ${pointer}${wiring}`);
   }
 
   if (ctx.config.autoCheckUpdates) {
