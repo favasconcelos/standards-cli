@@ -1,6 +1,6 @@
 {
   "name": "@favasconcelos/standards-cli",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Installs shared coding standards on a machine and wires them into every installed AI harness",
   "keywords": [
     "cli",
