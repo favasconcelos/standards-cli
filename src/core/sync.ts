@@ -1,7 +1,7 @@
 import { copyFile, lstat, mkdir, readFile, readlink, rename, symlink } from 'node:fs/promises';
 import { dirname } from 'node:path';
 
-function backupName(path: string): string {
+export function backupName(path: string): string {
   return `${path}.bak-${new Date().toISOString().replace(/[:.]/g, '-')}`;
 }
 

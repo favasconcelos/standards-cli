@@ -56,6 +56,14 @@ export async function initCommand(ctx: Context): Promise<void> {
     } else {
       p.log.success(`${harness.label}: pointer installed at ${tildify(pointer)}${result.backup ? ` (previous backed up to ${tildify(result.backup)})` : ''}`);
     }
+    if (harness.configWiring) {
+      const wired = await harness.configWiring.ensure(ctx.home, pointer);
+      p.log.success(
+        wired.changed
+          ? `${harness.label}: added ${harness.configWiring.label} entry in ${tildify(wired.path)}${wired.backup ? ` (previous backed up to ${tildify(wired.backup)})` : ''}`
+          : `${harness.label}: ${harness.configWiring.label} already set.`,
+      );
+    }
   }
 
   p.outro(`All set. Run ${c.cyan('standards status')} to verify, ${c.cyan('standards sync')} after upgrades.`);

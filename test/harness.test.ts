@@ -12,8 +12,9 @@ describe('harness registry', () => {
     expect(globalHarnesses().length).toBeGreaterThan(0);
     expect(harnessById('opencode')?.label).toBe('OpenCode');
     expect(harnessById('nope')).toBeUndefined();
-    expect(harnessById('copilot')?.scope).toBe('repo');
-    expect(harnessById('copilot')?.pointerPath).toBeUndefined();
+    expect(harnessById('copilot')?.scope).toBe('global');
+    expect(harnessById('opencode')?.configWiring).toBeDefined();
+    expect(harnessById('pi')?.configWiring).toBeUndefined();
   });
 
   it('resolves pointer paths under the given home', async () => {
@@ -21,6 +22,7 @@ describe('harness registry', () => {
     expect(harnessById('pi')?.pointerPath?.(home)).toBe(join(home, '.pi/agent/AGENTS.md'));
     expect(harnessById('codex')?.pointerPath?.(home)).toBe(join(home, '.codex/AGENTS.md'));
     expect(harnessById('claude')?.pointerPath?.(home)).toBe(join(home, '.claude/CLAUDE.md'));
+    expect(harnessById('copilot')?.pointerPath?.(home)).toBe(join(home, '.copilot/copilot-instructions.md'));
     expect(harnessById('opencode')?.pointerPath?.(home)).toBe(join(home, '.config/opencode/CODE_STANDARDS.md'));
   });
 

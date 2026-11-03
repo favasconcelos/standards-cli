@@ -32,6 +32,14 @@ export async function syncCommand(ctx: Context): Promise<void> {
     } else {
       console.log(`${c.green('linked')} ${harness.label} ${c.dim(tildify(pointer))}${result.backup ? ` ${c.dim(`(backup: ${tildify(result.backup)})`)}` : ''}`);
     }
+    if (harness.configWiring) {
+      const wired = await harness.configWiring.ensure(ctx.home, pointer);
+      console.log(
+        wired.changed
+          ? `${c.green('wired')} ${harness.label} ${c.dim(tildify(wired.path))}${wired.backup ? ` ${c.dim(`(backup: ${tildify(wired.backup)})`)}` : ''}`
+          : `${c.dim('wired')} ${harness.label} ${c.dim(tildify(wired.path))}`,
+      );
+    }
   }
 
   if (ctx.config.autoCheckUpdates) {

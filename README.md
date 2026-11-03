@@ -24,16 +24,20 @@ To run from source instead: `npm install && npm run build && npm link`.
 1. **Canonical copy** – the standards text ships with the package (`templates/CODE_STANDARDS.md`).
    `sync` copies it to `~/.local/share/standards-cli/CODE_STANDARDS.md` (backing up a
    hand-edited copy first, never deleting).
-2. **Pointers, not config edits** – for each harness the CLI creates the file that harness
-   already reads, as a symlink to the canonical copy. Updates therefore propagate atomically.
+2. **Pointers first, minimal config edits only when required** – for each harness the CLI
+   creates the file that harness already reads, as a symlink to the canonical copy. Updates
+   therefore propagate atomically. The one exception is opencode, which only auto-loads
+   `AGENTS.md`: the CLI also appends the pointer to `instructions` in the global
+   `~/.config/opencode/opencode.json(c)` (comments preserved, previous file backed up,
+   skipped when already present).
 
-| Harness     | Pointer file                           | How the harness picks it up                                         |
-| ----------- | -------------------------------------- | ------------------------------------------------------------------- |
-| opencode    | `~/.config/opencode/CODE_STANDARDS.md` | already listed in `opencode.json` `instructions`                    |
-| pi          | `~/.pi/agent/AGENTS.md`                | concatenated with repo `AGENTS.md` files at startup                 |
-| Codex       | `~/.codex/AGENTS.md`                   | global scope (32 KiB combined cap)                                  |
-| Claude Code | `~/.claude/CLAUDE.md`                  | user-level memory                                                   |
-| Copilot     | — (repo scope only)                    | repo `AGENTS.md` covers the coding agent; nothing global to install |
+| Harness     | Pointer file                           | How the harness picks it up                                        |
+| ----------- | -------------------------------------- | ------------------------------------------------------------------ |
+| opencode    | `~/.config/opencode/CODE_STANDARDS.md` | `instructions` entry the CLI adds to the global `opencode.json(c)` |
+| pi          | `~/.pi/agent/AGENTS.md`                | concatenated with repo `AGENTS.md` files at startup                |
+| Codex       | `~/.codex/AGENTS.md`                   | global scope (32 KiB combined cap)                                 |
+| Claude Code | `~/.claude/CLAUDE.md`                  | user-level memory                                                  |
+| Copilot     | `~/.copilot/copilot-instructions.md`   | Copilot CLI user-level instructions, applied across repositories   |
 
 ## Commands
 
@@ -67,8 +71,9 @@ locations with `STANDARDS_CLI_CONFIG_DIR` / `STANDARDS_CLI_STATE_DIR`.
 ## Extending
 
 - **New harness**: implement `Harness` (`src/harnesses/types.ts`) in `src/harnesses/` and
-  register it in `src/harnesses/index.ts`. The CLI only ever creates symlinks at the
-  pointer path — it never edits harness config files.
+  register it in `src/harnesses/index.ts`. The CLI creates symlinks at the pointer path; only
+  add `configWiring` when the harness cannot read the pointer on its own (see opencode).
+  Config edits must be minimal, idempotent, comment-preserving and backed up first.
 
 ## Development
 

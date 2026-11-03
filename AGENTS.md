@@ -43,7 +43,10 @@ Run `npm run lint` before finishing a task. Fix all reported issues.
   promote content changes here first, then `standards sync` on your machine.
 - New harness: implement `Harness` (`src/harnesses/types.ts`) in `src/harnesses/`
   and register it in `src/harnesses/index.ts`.
-- Harness wiring is symlink-only: the CLI never edits harness config files, it only
-  creates the pointer file each harness already reads. Real files found at a pointer
-  path are backed up (`<path>.bak-<timestamp>`), never deleted.
+- Harness wiring is symlink-only by default: the CLI creates the pointer file each harness
+  already reads. Real files found at a pointer path are backed up
+  (`<path>.bak-<timestamp>`), never deleted. Exception: a harness that cannot read the
+  pointer on its own declares `configWiring` (`src/harnesses/types.ts`); today only opencode
+  (`src/harnesses/opencode-config.ts` appends to `instructions` via `jsonc-parser`, preserving
+  comments, backing up first, refusing to edit unparsable configs).
 - Never print secrets. Destructive ops only on explicit confirmation.
