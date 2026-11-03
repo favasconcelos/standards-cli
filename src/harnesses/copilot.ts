@@ -1,4 +1,5 @@
 import { spawnSync } from 'node:child_process';
+import { join } from 'node:path';
 import { onPath } from '@/harnesses/detect';
 import type { Harness } from '@/harnesses/types';
 
@@ -26,7 +27,8 @@ function copilotCliPresent(): boolean {
 export const copilotHarness: Harness = {
   id: 'copilot',
   label: 'Copilot',
-  scope: 'repo',
+  scope: 'global',
+  pointerPath: (home) => join(home, '.copilot/copilot-instructions.md'),
   detect: () => copilotCliPresent(),
-  note: 'Repo-level AGENTS.md covers the coding agent; nothing global to install.',
+  note: 'Copilot CLI user-level instructions, applied across repositories.',
 };

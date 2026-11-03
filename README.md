@@ -31,13 +31,13 @@ To run from source instead: `npm install && npm run build && npm link`.
    `~/.config/opencode/opencode.json(c)` (comments preserved, previous file backed up,
    skipped when already present).
 
-| Harness     | Pointer file                           | How the harness picks it up                                         |
-| ----------- | -------------------------------------- | ------------------------------------------------------------------- |
-| opencode    | `~/.config/opencode/CODE_STANDARDS.md` | `instructions` entry the CLI adds to the global `opencode.json(c)`  |
-| pi          | `~/.pi/agent/AGENTS.md`                | concatenated with repo `AGENTS.md` files at startup                 |
-| Codex       | `~/.codex/AGENTS.md`                   | global scope (32 KiB combined cap)                                  |
-| Claude Code | `~/.claude/CLAUDE.md`                  | user-level memory                                                   |
-| Copilot     | — (repo scope only)                    | repo `AGENTS.md` covers the coding agent; nothing global to install |
+| Harness     | Pointer file                           | How the harness picks it up                                        |
+| ----------- | -------------------------------------- | ------------------------------------------------------------------ |
+| opencode    | `~/.config/opencode/CODE_STANDARDS.md` | `instructions` entry the CLI adds to the global `opencode.json(c)` |
+| pi          | `~/.pi/agent/AGENTS.md`                | concatenated with repo `AGENTS.md` files at startup                |
+| Codex       | `~/.codex/AGENTS.md`                   | global scope (32 KiB combined cap)                                 |
+| Claude Code | `~/.claude/CLAUDE.md`                  | user-level memory                                                  |
+| Copilot     | `~/.copilot/copilot-instructions.md`   | Copilot CLI user-level instructions, applied across repositories   |
 
 ## Commands
 
